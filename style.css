@@ -1,0 +1,32 @@
+body {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.container {
+  display: grid;
+  /* grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr); */
+  width: auto;
+  height: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell {
+  list-style: none;
+  border: 1px solid black;
+  display: grid;
+  height: 4rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.hide {
+  display: none;
+}
+
+.flag {
+  background-color: red;
+}
