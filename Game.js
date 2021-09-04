@@ -1,14 +1,11 @@
 class Game {
-    constructor(
-    flaggingOn,
-    gameOver
-    ){
-        this.flaggingOn = flaggingOn;
+    constructor(isFlaggingOn, gameOver){
+        this.isFlaggingOn = isFlaggingOn;
         this.gameOver = gameOver;
     }
 
     resetGame() {
-        this.flaggingOn = false;
+        this.isFlaggingOn = false;
         this.gameOver = false;
     };
 };
