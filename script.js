@@ -18,7 +18,7 @@ const createGame = function() {
 
     mineSweepGrid.createGridCells();
     mineSweepGrid.assignMines();
-    mineSweepGrid.updateMineCount();
+    mineSweepGrid.updateEachCellNumMineAround();
 
     displayGrid(mineSweepGrid);
     clickToReveal(mineSweepGrid, mineSweepGame);

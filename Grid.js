@@ -1,43 +1,39 @@
 import Cell from "./Cell.js";
 import { getRandomInt } from "./gridUtils.js";
 class Grid {
-    constructor(gridSize, numMines) 
-    {
+    constructor(gridSize, numMines) {
         this.gridSize = gridSize;
         this.numMines = numMines;
         this.cells = [];
     }
 
     createGridCells() {
-        this.cells = new Array(this.gridSize);
-    
-        for (let i = 0; i < this.gridSize; i++) {
-            this.cells[i] = new Array(this.gridSize);
-        };
-    
+        this.cells = new Array();
         for (let row = 0; row < this.gridSize; row++) {
             for (let col = 0; col < this.gridSize; col++) {
                 let cell = new Cell(row, col);
-                this.cells[row][col] = cell;
-            };
-            
-        };
-    };
-
-    getCell(row, col) {
-        return this.cells[row][col];
+                this.cells.push(cell);
+            }        
+        }
     }
 
-    changeCellProperty(row, col, prop, value){
-        this.cells[row][col][prop] = value;
+    getCellByRowCol (row, col){
+        let cell;
+        this.cells.forEach(c =>{
+            if (c.row == row && c.col == col){
+                cell = c;
+                //TODO: BREAK
+            }
+        })
+        return cell;
     }
     
     assignMines(){ 
         let numMinesCreated = 0;
         while (numMinesCreated < this.numMines) {
-            let row = getRandomInt(this.gridSize);
-            let col = getRandomInt(this.gridSize);
-            let cell = this.getCell(row, col);
+            let numGridCells = this.gridSize**2;
+            let randCell = getRandomInt(numGridCells - 1);
+            let cell = this.cells[randCell];
             if (!cell.isMine) {
                 cell.isMine = true;
                 numMinesCreated++;
@@ -45,7 +41,10 @@ class Grid {
         }
     };
 
-    applyFnToNeighbors(row, col, fn){
+    applyFnToNeighbors(cell, fn){
+        let row = cell.row;
+        let col = cell.col;
+
         let topLeft = {row: row-1, col: col-1};
         let topCenter = {row: row-1, col: col};
         let topRight = {row: row-1, col: col+1};
@@ -57,69 +56,75 @@ class Grid {
         let bottomCenter = {row: row+1, col: col};
         let bottomRight = {row: row+1, col: col+1};
     
-        let surroundingCells = [topLeft, topCenter, topRight, 
+        let neighborCoordinates = [topLeft, topCenter, topRight, 
                                 centerLeft, centerRight, 
                                 bottomLeft, bottomCenter, bottomRight];
+       
         
-        surroundingCells.forEach(c => fn(c));
+
+        const neighborCells = neighborCoordinates
+            .filter(c => this.isCellInBounds(c))
+            .map(c => this.getCellByRowCol(c.row, c.col));
+        neighborCells.forEach(neighborCell => fn(neighborCell));
     };
 
-    isInBounds(coordinate){
+    isCoordinateInBounds(coordinate){
         return coordinate >= 0 && coordinate < this.gridSize;
-    };
+    }
+
+    isCellInBounds(cell){
+        return this.isCoordinateInBounds(cell.row) && this.isCoordinateInBounds(cell.col);
+    }
 
     isMineAndInBounds(surroundingCell) {
-        if (!this.isInBounds(surroundingCell.row) || !this.isInBounds(surroundingCell.col)) {
+        if (!this.isCellInBounds(surroundingCell)) {
             return false;  
         }
-        return this.getCell(surroundingCell.row, surroundingCell.col).isMine;
-    };
+        return surroundingCell.isMine;
+    }
 
-    getNumMines(cell, row, col){
-        if(this.isMineAndInBounds(cell))
-        this.getCell(row,col).numMinesAround++;
-    };
+    updateThisNumMines(cell, neighborCell){
+        if(this.isMineAndInBounds(neighborCell))
+            cell.numMinesAround++;
+    }
 
-    updateMineCount(){
-        for (let row = 0; row < this.gridSize; row++) {
-            for (let col = 0; col < this.gridSize; col++) {
-                if (!this.getCell(row, col).isMine){
-                    this.changeCellProperty(row, col, "numMinesAround", 0);
-                    this.applyFnToNeighbors(row, col, (cell) => {this.getNumMines(cell, row, col)});
-                }
-            }
-        };
-    };
+    updateEachCellNumMineAround(){
+        this.cells
+            .filter(cell => !cell.isMine)
+            .forEach(cell => {
+                cell.numMinesAround = 0;
+                this.applyFnToNeighbors(cell, neighborCell => this.updateThisNumMines(cell, neighborCell));
+        })
+    }
 
     revealNeighbors(cell, revealedCells, zeros){
                 
-        if(!this.isInBounds(cell.row) || !this.isInBounds(cell.col)) {
+        if(!this.isCellInBounds(cell)) {
            return;
         }
 
-        let currentCell = this.getCell(cell.row, cell.col);
-        if (currentCell.numMinesAround == 0 && !currentCell.isRevealed){
-            currentCell.isRevealed = true;
-            zeros.push(currentCell);
-            revealedCells.push(currentCell);
+        if(cell.isRevealed){
+            return;
         }
 
-        else if (currentCell.numMinesAround > 0 && !currentCell.isRevealed) {
-            currentCell.isRevealed = true;
-            revealedCells.push(currentCell);
+        if (cell.numMinesAround == 0){ 
+            zeros.push(cell);
         }
+        cell.isRevealed = true;
+        revealedCells.push(cell);
 
     };
 
-    revealZeros  = function(row, col) {
-        let zeros = [this.getCell(row, col)];
-        let revealedCells = [this.getCell(row,col)];
-        this.changeCellProperty(row, col, "isRevealed", true);
+    revealZeros  = function(cell) {
+        let zeros = [cell];
+        let revealedCells = [cell];
+        cell.isRevealed = true;
         
         while (zeros.length > 0) {
-            row = zeros[0].row;
-            col = zeros[0].column;
-            this.applyFnToNeighbors(row, col, (cell) => {this.revealNeighbors(cell, revealedCells, zeros)});
+            let zeroCell = zeros[0];
+            this.applyFnToNeighbors(zeroCell, zeroCell =>
+                this.revealNeighbors(zeroCell, revealedCells, zeros)
+            );
             zeros.shift();
         };
         

@@ -1,13 +1,13 @@
 class Cell {
     constructor(
         row,
-        column,
+        col,
         isMine = false,
         numMinesAround = undefined,
         isRevealed = false,
         isFlaggingOn = false
     ) {
-        this.column = column;
+        this.col = col;
         this.row = row;
         this.isMine = isMine;
         this.numMinesAround = numMinesAround;
