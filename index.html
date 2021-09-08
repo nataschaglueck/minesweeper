@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="script.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Minesweeper</h1>
+    </header>
+    <div></div>
+    <main>
+        <article>
+            <div class="game-options">
+                <button class="new-game-btn" title="New Game">
+                    <img src="restartIcon.svg" class="icon-btn" />
+                </button>
+                <button class="flag-btn" title="turn flagging on">
+                    <img src="flagIconWhite.svg" class ="icon-btn"/>
+                </button>
+            </div>
+            <ul class="container"></ul>
+        </article>
+        <div class="game-over" style="display: none;">
+            <h3>Game Over</h3>
+            <button class="new-game-btn">New Game</button>
+        </div>
+    </main>
+</body>
+
+</html>
