@@ -4,14 +4,14 @@ import {activateFlaggingButton, clickToReveal, startGame, cleanSlate} from "./ga
 import Grid from "./Grid.js";
 import Game from "./Game.js";
 
-const mineSweepGrid = new Grid(12, 15);
+const mineSweepGrid = new Grid(9, 10);
 const mineSweepGame= new Game(false, false);
 
 setDisplayedGridSize(mineSweepGrid);
 
 const createGame = function() {
     
-    cleanSlate();
+    cleanSlate(mineSweepGame);
     mineSweepGrid.resetGrid();
     mineSweepGame.resetGame();
     resetDisplay();

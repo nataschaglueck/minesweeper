@@ -1,4 +1,4 @@
-import { displayRevealedCell, revealWholeGrid, resetDisplay, getCellElem} from "./display.js";
+import { displayRevealedCell, revealWholeGrid, resetDisplay, getCellElem, gameOverDisplay} from "./display.js";
 import Grid from "./Grid.js";
 
 
@@ -21,6 +21,7 @@ export const changeDisplayedCell = function (celElem, cell, gridObject, game) {
         cell.isRevealed = true;
         revealWholeGrid(gridObject);
         game.gameOver = true;
+        gameOverDisplay();
         return;
     }
 
@@ -72,11 +73,11 @@ export const activateFlaggingButton = function(game) {
 }
 
 export const startGame = function(createGame) {
-    let newGameButton = document.querySelector(".new-game-btn");
-    newGameButton.addEventListener("click", createGame);
+    let newGameButton = document.querySelectorAll(".new-game-btn");
+    newGameButton.forEach(btn => btn.addEventListener("click", createGame));
 }
 
-export const cleanSlate = function() {
+export const cleanSlate = function(gameObject) {
     let cells = document.querySelectorAll(".clickable");
     let flaggingButton = document.querySelector(".flag-btn");
     cells.forEach((cell) => {
@@ -85,4 +86,8 @@ export const cleanSlate = function() {
         }
     );
     flaggingButton.setAttribute('title', "turn flagging on");
+    if(gameObject.gameOver){
+        let gameOverScreen = document.querySelector(".game-over");
+        gameOverScreen.style.display = "none";
+    }
  }

@@ -50,3 +50,8 @@ export const setDisplayedGridSize = function(gridObject) {
         grid-template-rows: repeat(${gridObject.gridSize}, 1fr);`);
 
 }
+
+export const gameOverDisplay = function (){
+    let gameOverScreen = document.querySelector(".game-over");
+    gameOverScreen.style.removeProperty("display");
+}
