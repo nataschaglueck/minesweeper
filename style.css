@@ -2,7 +2,6 @@ main {
   display: grid;
   justify-content: center;
   align-items: center;
-  /* grid-template-columns: 1fr 1fr 1fr; */
 }
 
 article {
@@ -11,16 +10,14 @@ article {
   flex-direction: column;
   align-items: center;
 }
-.container {
+.grid-container {
   display: grid;
-  /* grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(9, 1fr); */
   width: 100%;
   height: 100%;
   justify-content: center;
   align-items: center;
   grid-gap: 4px;
-  background-color: black;
+  background-color: #000;
   margin: 0;
   padding: 4px;
   box-sizing: border-box;
@@ -29,10 +26,9 @@ article {
 .cell {
   list-style: none;
   background-color: white;
-  /* border: 1px solid black; */
   display: flex;
-  height: 3rem;
-  width: 3rem;
+  height: 3em;
+  width: 3em;
   justify-content: center;
   align-items: center;
   margin: 0;
@@ -59,9 +55,9 @@ article {
   display: none;
 }
 .revealed {
-  -moz-box-shadow: inset 0 0 10px #000000;
-  -webkit-box-shadow: inset 0 0 10px #000000;
-  box-shadow: inset 0 0 10px #000000;
+  -moz-box-shadow: inset 0 0 10px #000;
+  -webkit-box-shadow: inset 0 0 10px #000;
+  box-shadow: inset 0 0 10px #000;
   width: 100%;
   height: 100%;
   display: grid;

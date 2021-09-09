@@ -18,13 +18,7 @@ class Grid {
     }
 
     getCellByRowCol (row, col){
-        let cell;
-        this.cells.forEach(c =>{
-            if (c.row == row && c.col == col){
-                cell = c;
-                //TODO: BREAK
-            }
-        })
+        let cell = this.cells.find(c => c.row == row && c.col == col);
         return cell;
     }
     
@@ -32,8 +26,8 @@ class Grid {
         let numMinesCreated = 0;
         while (numMinesCreated < this.numMines) {
             let numGridCells = this.gridSize**2;
-            let randCell = getRandomInt(numGridCells - 1);
-            let cell = this.cells[randCell];
+            let randIdx = getRandomInt(numGridCells - 1);
+            let cell = this.cells[randIdx];
             if (!cell.isMine) {
                 cell.isMine = true;
                 numMinesCreated++;
@@ -60,8 +54,6 @@ class Grid {
                                 centerLeft, centerRight, 
                                 bottomLeft, bottomCenter, bottomRight];
        
-        
-
         const neighborCells = neighborCoordinates
             .filter(c => this.isCellInBounds(c))
             .map(c => this.getCellByRowCol(c.row, c.col));
@@ -83,21 +75,21 @@ class Grid {
         return surroundingCell.isMine;
     }
 
-    updateThisNumMines(cell, neighborCell){
+    updateThisNeighborMineCount(cell, neighborCell){
         if(this.isMineAndInBounds(neighborCell))
-            cell.numMinesAround++;
+            cell.mineNeighborCount++;
     }
 
-    updateEachCellNumMineAround(){
+    updateEachCellMineNeighborCount(){
         this.cells
             .filter(cell => !cell.isMine)
             .forEach(cell => {
-                cell.numMinesAround = 0;
-                this.applyFnToNeighbors(cell, neighborCell => this.updateThisNumMines(cell, neighborCell));
+                cell.mineNeighborCount = 0;
+                this.applyFnToNeighbors(cell, neighborCell => this.updateThisNeighborMineCount(cell, neighborCell));
         })
     }
 
-    revealNeighbors(cell, revealedCells, zeros){
+    revealNeighbors(cell, cellsToReveal, zeros){
                 
         if(!this.isCellInBounds(cell)) {
            return;
@@ -107,28 +99,27 @@ class Grid {
             return;
         }
 
-        if (cell.numMinesAround == 0){ 
+        if (cell.mineNeighborCount == 0){ 
             zeros.push(cell);
         }
         cell.isRevealed = true;
-        revealedCells.push(cell);
+        cellsToReveal.push(cell);
+    }
 
-    };
-
-    revealZeros  = function(cell) {
+    getCellsAroundZeros  = function(cell) {
         let zeros = [cell];
-        let revealedCells = [cell];
+        let cellsToReveal = [cell];
         cell.isRevealed = true;
         
         while (zeros.length > 0) {
             let zeroCell = zeros[0];
             this.applyFnToNeighbors(zeroCell, zeroCell =>
-                this.revealNeighbors(zeroCell, revealedCells, zeros)
+                this.revealNeighbors(zeroCell, cellsToReveal, zeros)
             );
             zeros.shift();
         };
         
-        return revealedCells;
+        return cellsToReveal;
     };
     
     resetGrid() {

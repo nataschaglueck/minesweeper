@@ -1,8 +1,6 @@
-import { displayRevealedCell, revealWholeGrid, resetDisplay, getCellElem} from "./display.js";
-import Grid from "./Grid.js";
+import { displayRevealedCell, revealWholeGrid, getCellElem} from "./display.js";
 
-
-export const changeDisplayedCell = function (celElem, cell, gridObject, game) {
+export const changeDisplayedCell = function (celElem, cell, grid, game) {
     if (game.gameOver){
         return;
     }
@@ -12,77 +10,59 @@ export const changeDisplayedCell = function (celElem, cell, gridObject, game) {
         return;
     }
 
-    if (cell.numMinesAround == 0){
-        gridObject.revealZeros(cell).forEach(c => displayRevealedCell(c));
+    if (cell.mineNeighborCount == 0){
+        grid.getCellsAroundZeros(cell).forEach(c => displayRevealedCell(c));
         return;
     }
 
     if (cell.isMine){
         cell.isRevealed = true;
-        revealWholeGrid(gridObject);
+        revealWholeGrid(grid);
         game.gameOver = true;
         return;
     }
 
     cell.isRevealed = true;
     displayRevealedCell(cell);
-    return;   
-};
+}
 
-export const clickToReveal = function (gridObject, game){
-    gridObject.cells.forEach(cell => {
+export const clickToReveal = function (grid, game){
+    grid.cells.forEach(cell => {
         let cellElem = getCellElem(cell);
         cellElem.addEventListener("click", () => 
-            changeDisplayedCell(cellElem, cell, gridObject, game)
+            changeDisplayedCell(cellElem, cell, grid, game)
         );
     });
 }
 
-
-
 export const toggleFlagging = function (object, cellElem){
+    //object is either the Game or the Cell object
     object.isFlaggingOn ? cellElem.classList.remove("flag") : cellElem.classList.add("flag");
     object.isFlaggingOn = !object.isFlaggingOn;
 }
 
 export const activateFlaggingButton = function(game) {
-    let flaggingButton = document.querySelector(".flag-btn");
-    flaggingButton.addEventListener("click", ()=>{
-        toggleFlagging(game, flaggingButton);
+    const flagBtn = document.querySelector(".flag-btn");
+    flagBtn.addEventListener("click", ()=>{
+        toggleFlagging(game, flagBtn);
         let clickableCellElems = document.querySelectorAll(".clickable");
         if (game.isFlaggingOn) {
-            clickableCellElems.forEach((cell) => {
+            clickableCellElems.forEach(cell => {
                 cell.style.cursor = "url(flagIconBlack.svg), auto";
                 cell.classList.add("flaggable");
-                }
-            )
-            flaggingButton.setAttribute('title', "turn flagging off");
-
-         }
-         else {
-            clickableCellElems.forEach((cell) => {
-                cell.style.removeProperty('cursor');
+            });
+            flagBtn.setAttribute("title", "turn flagging off");
+        } else {
+            clickableCellElems.forEach(cell => {
+                cell.style.removeProperty("cursor");
                 cell.classList.remove("flaggable");
-                }
-            )
-            flaggingButton.setAttribute('title', "turn flagging on");
-
+            });
+            flagBtn.setAttribute("title", "turn flagging on");
         }
-    })
+    });
 }
 
 export const startGame = function(createGame) {
-    let newGameButton = document.querySelector(".new-game-btn");
-    newGameButton.addEventListener("click", createGame);
+    const newGameBtn = document.querySelector(".new-game-btn");
+    newGameBtn.addEventListener("click", createGame);
 }
-
-export const cleanSlate = function() {
-    let cells = document.querySelectorAll(".clickable");
-    let flaggingButton = document.querySelector(".flag-btn");
-    cells.forEach((cell) => {
-        cell.style.removeProperty('cursor');
-        cell.classList.remove("flaggable");    
-        }
-    );
-    flaggingButton.setAttribute('title', "turn flagging on");
- }

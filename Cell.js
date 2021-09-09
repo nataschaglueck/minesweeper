@@ -3,14 +3,14 @@ class Cell {
         row,
         col,
         isMine = false,
-        numMinesAround = undefined,
+        mineNeighborCount = undefined,
         isRevealed = false,
         isFlaggingOn = false
     ) {
         this.col = col;
         this.row = row;
         this.isMine = isMine;
-        this.numMinesAround = numMinesAround;
+        this.mineNeighborCount = mineNeighborCount;
         this.isRevealed = isRevealed;
         this.isFlaggingOn = isFlaggingOn
     }
