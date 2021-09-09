@@ -18,8 +18,7 @@ class Grid {
     }
 
     getCellByRowCol (row, col){
-        let cell = this.cells.find(c => c.row == row && c.col == col);
-        return cell;
+        return this.cells.find(c => c.row == row && c.col == col);
     }
     
     assignMines(){ 
@@ -68,24 +67,24 @@ class Grid {
         return this.isCoordinateInBounds(cell.row) && this.isCoordinateInBounds(cell.col);
     }
 
-    isMineAndInBounds(surroundingCell) {
-        if (!this.isCellInBounds(surroundingCell)) {
+    isMineAndInBounds(cell) {
+        if (!this.isCellInBounds(cell)) {
             return false;  
         }
-        return surroundingCell.isMine;
+        return cell.isMine;
     }
 
-    updateThisNeighborMineCount(cell, neighborCell){
+    updateNeighboringMineCount(cell, neighborCell){
         if(this.isMineAndInBounds(neighborCell))
-            cell.mineNeighborCount++;
+            cell.neighboringMineCount++;
     }
 
-    updateEachCellMineNeighborCount(){
+    updateAllNeighboringMineCounts(){
         this.cells
             .filter(cell => !cell.isMine)
             .forEach(cell => {
-                cell.mineNeighborCount = 0;
-                this.applyFnToNeighbors(cell, neighborCell => this.updateThisNeighborMineCount(cell, neighborCell));
+                cell.neighboringMineCount = 0;
+                this.applyFnToNeighbors(cell, neighborCell => this.updateNeighboringMineCount(cell, neighborCell));
         })
     }
 
@@ -99,14 +98,14 @@ class Grid {
             return;
         }
 
-        if (cell.mineNeighborCount == 0){ 
+        if (cell.neighboringMineCount == 0){ 
             zeros.push(cell);
         }
         cell.isRevealed = true;
         cellsToReveal.push(cell);
     }
 
-    getCellsAroundZeros  = function(cell) {
+    getCellsNeighboringZeros  = function(cell) {
         let zeros = [cell];
         let cellsToReveal = [cell];
         cell.isRevealed = true;

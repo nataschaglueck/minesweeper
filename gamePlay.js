@@ -10,8 +10,8 @@ export const changeDisplayedCell = function (celElem, cell, grid, game) {
         return;
     }
 
-    if (cell.mineNeighborCount == 0){
-        grid.getCellsAroundZeros(cell).forEach(c => displayRevealedCell(c));
+    if (cell.neighboringMineCount == 0){
+        grid.getCellsNeighboringZeros(cell).forEach(c => displayRevealedCell(c));
         return;
     }
 

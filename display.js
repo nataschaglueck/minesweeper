@@ -13,7 +13,7 @@ export const displayRevealedCell = function (cell) {
 export const displayGrid = function(grid) {
     const gridContainer = document.querySelector(".grid-container");
     grid.cells.forEach(cell => {
-        let content = cell.isMine ? `<img src="bombicon.svg" class="bomb-icn" />` : `${cell.mineNeighborCount}`;
+        let content = cell.isMine ? `<img src="bombicon.svg" class="bomb-icn" />` : `${cell.neighboringMineCount}`;
         const cellContent = document.createElement("li");
         cellContent.classList.add("cell");
         cellContent.classList.add("clickable");
